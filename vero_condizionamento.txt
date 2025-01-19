@@ -14,7 +14,6 @@ A3 = zeros(dim);
 A4 = ones(dim);
 
 A = [A1,A2;A3,A4]
-
 det_A= det(A)
 [V,D] = eig(A)
 spettro = diag(D);

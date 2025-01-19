@@ -1,0 +1,40 @@
+clear;
+clc;
+
+n=1
+
+while mod(n,2) ==1
+
+n = randi([10,20]) ;
+
+end
+
+fprintf("Il numero scelto e': %d\n",n);
+
+matrix_size= n/2;
+
+A1 = ones(matrix_size);
+
+
+A2 = 2 * ones(matrix_size);
+
+A3 = zeros(matrix_size);
+A4 = ones(matrix_size);
+
+
+row1= [A1,A2];
+row2= [A3,A4];
+
+A= [row1;row2];
+disp(A);
+
+det_A=det(A)
+[V,D] = eig(A);
+
+spettro = diag(D)
+
+raggio_spettrale = max(abs(spettro))
+
+norma_uno =norm(A,1)
+norma_due =norm(A,2) 
+norma_infinito=norm(A,Inf)

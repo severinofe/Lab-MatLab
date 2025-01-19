@@ -1,0 +1,25 @@
+clear;
+clc;
+
+n = randi([10,20]);
+while mod(n,2) ~=0
+n = randi([10,20]);
+end
+dim =n/2
+
+
+A1= ones(dim);
+A2 = 2 * ones(dim);
+A3 = zeros(dim);
+A4 = ones(dim);
+
+A = [A1,A2;A3,A4]
+
+det_A= det(A)
+[V,D] = eig(A)
+spettro = diag(D);
+raggio_Spettrale = max(abs(spettro))
+cond_uno = cond(A,1)
+cond_due = cond(A,2)
+cond_inf = cond(A,Inf)
+

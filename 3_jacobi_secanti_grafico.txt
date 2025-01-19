@@ -1,0 +1,140 @@
+clear;
+clc;
+
+
+kmax=1000;
+tol = 1e-10;
+
+fun = @(x) cos((pi.*x)./4) -4* x.^2 +4;
+fund = @(x) - (pi/4) * sin((pi*x)/4) - 8*x;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%   Secanti
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+a =1;
+b=2;
+x_secanti=0;
+
+fa = fun(a);
+fb = fun(b);
+
+
+ if (fa*fb > 0)
+       error("La radice non è nell'intervallo [a,b]");
+    end
+
+    k = 1;
+    c = (a+b)/2;
+
+    fc = fun(c);
+    if (abs(fc) < tol)
+        x_secanti = c;
+        return;
+    end
+
+    flag = 1;
+    while(flag ~= 0)
+        k = k+1;
+        if(fa*fc < 0)
+            b = c;
+            fb = fc;
+        else
+            a = c;
+            fa = fc;
+        end
+
+        c = (a+b)/2;
+        fc = fun(c);
+
+        flag = ((abs(b-a) > tol) && abs(fc) > tol && (k<kmax));
+    end
+    
+    if(k>=kmax)
+        warning("E' stato raggiunto il numero massimo di iterazioni")
+        x_secanti = inf;
+    elseif(abs(fc) < tol)
+        x_secanti = c;
+    else
+        x_secanti = (a+b)/2;
+    end
+
+
+   fprintf ('Il risultato del metodo di bisezione e: %e' ,x_secanti);
+    x_secanti
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%   Newton
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+     k = 0;
+     x0=1;
+    f0 = fun(x0);
+    if(abs(f0) < tol)
+        x = x0;
+        return;
+    end
+
+    fd = fund(x0);
+
+    if(abs(fd) < 1e-100)
+        error("La derivata calcolata in x0 si annulla, cambia x0");
+    end
+
+    k = 1;
+    x_new = x0 - (f0/fd);
+
+    flag = 1;
+
+    while flag
+        k = k+1;
+        xk = x_new;
+
+        fk = fun(xk);
+        fd = fund(xk);
+
+        if(abs(fd) < 1e-100)
+        error("La derivata calcolata in x0 si annulla, cambia x0");
+        end
+
+        x_new = xk - (fk/fd);
+
+        flag = ((abs(x_new - xk) > abs(xk)*tol) && (k<kmax) && (abs(fun(x_new))>tol));
+    end
+        if (k >= kmax)
+            warning("kmax è stato raggiunto")
+            x = inf;
+        else
+            x = x_new;
+        end
+
+
+
+ fprintf ('Il risultato del metodo di Newton e: %e' ,x);
+    x
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%   Grafico
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+    x_l = linspace(1,2,200);
+yf = fun(x_l);
+
+figure
+hold on
+
+% 1) Grafico di tutta la funzione
+plot(x_l, yf, '-k', 'LineWidth',2, 'DisplayName','f(x)');
+
+% 2) Radice trovata dal metodo delle secanti (o bisezione)
+plot(x_secanti, fun(x_secanti), 'ob', 'MarkerSize',10, ...
+     'DisplayName','Radice Secanti');
+
+% 3) Radice trovata dal metodo di Newton
+plot(x, fun(x), 'xr', 'MarkerSize',10, ...
+     'DisplayName','Radice Newton');
+
+grid on
+title('Funzione e radici')
+xlabel('x')
+ylabel('f(x)')
+legend
+hold off
